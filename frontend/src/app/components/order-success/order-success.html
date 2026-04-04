@@ -1,0 +1,22 @@
+<div class="success-page">
+  @if (status() === 'loading') {
+    <div class="status-card">
+      <div class="status-icon">⏳</div>
+      <h2>Confirming your order...</h2>
+    </div>
+  } @else if (status() === 'success') {
+    <div class="status-card success">
+      <div class="status-icon">🎉</div>
+      <h2>Order Placed!</h2>
+      <p>Your payment was successful. Enjoy your food!</p>
+      <button class="btn-home" (click)="router.navigate(['/dashboard'])">Back to Home</button>
+    </div>
+  } @else {
+    <div class="status-card failed">
+      <div class="status-icon">❌</div>
+      <h2>Payment Failed</h2>
+      <p>Something went wrong. Please try again.</p>
+      <button class="btn-home" (click)="router.navigate(['/cart'])">Back to Cart</button>
+    </div>
+  }
+</div>

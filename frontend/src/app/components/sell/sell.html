@@ -13,6 +13,34 @@
 } @else {
   <div class="sell-page">
 
+    <!-- Earnings card -->
+    @if (earnings()) {
+      <div class="earnings-card">
+        <div class="earnings-main">
+          <div>
+            <div class="earnings-label">{{ earnings()!.this_month_label }} Earnings</div>
+            <div class="earnings-amount">₹{{ earnings()!.this_month | number:'1.2-2' }}</div>
+          </div>
+          <button class="btn-history" (click)="showHistory.set(!showHistory())">
+            {{ showHistory() ? 'Hide History' : 'View History' }}
+          </button>
+        </div>
+        @if (showHistory() && earnings()!.history.length > 0) {
+          <div class="earnings-history">
+            @for (month of earnings()!.history; track month.key) {
+              <div class="history-row">
+                <span class="history-label">{{ month.label }}</span>
+                <span class="history-amount">₹{{ month.total | number:'1.2-2' }}</span>
+              </div>
+            }
+          </div>
+        }
+        @if (showHistory() && earnings()!.history.length === 0) {
+          <p class="no-history">No earnings history yet.</p>
+        }
+      </div>
+    }
+
     <!-- Header -->
     @if (!showAddForm()) {
       <div class="sell-header">
@@ -66,29 +94,37 @@
           </div>
           <div class="dish-grid">
             @for (dish of group.dishes; track dish.id) {
-              <div class="dish-card">
+              <div class="dish-card" [class.sold-out]="dish.sold_count >= dish.quantity">
+                @if (dish.sold_count >= dish.quantity) {
+                  <div class="sold-out-ribbon">Sold Out</div>
+                }
                 <div class="dish-card-header">
                   <span class="dish-name">{{ dish.name }}</span>
-                  <button class="btn-delete" (click)="confirmDeleteId = dish.id" title="Remove dish" aria-label="Delete dish">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
-                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
-                      <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
-                    </svg>
-                  </button>
+                  @if (dish.sold_count < dish.quantity) {
+                    <button class="btn-delete" (click)="confirmDeleteId = dish.id" title="Remove dish" aria-label="Delete dish">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+                        <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                      </svg>
+                    </button>
+                  }
                 </div>
                 <div class="dish-meta">
                   <span class="meta-pill">{{ dish.quantity }} serving{{ dish.quantity > 1 ? 's' : '' }}</span>
                   <span class="meta-pill">{{ dish.quantity_size }} {{ dish.quantity_unit }}</span>
+                  <span class="meta-pill sold">🛒 {{ dish.sold_count }} sold</span>
                 </div>
                 @if (dish.whats_special) {
                   <p class="dish-special">✨ {{ dish.whats_special }}</p>
                 }
                 <div class="dish-footer">
-                  @if (dish.is_expired) {
-                    <span class="expiry-badge expired">Expired</span>
-                  } @else if (dish.expires_at) {
-                    <span class="expiry-badge active">Expires {{ dish.expires_at | date:'h:mm a' }}</span>
+                  @if (dish.sold_count < dish.quantity) {
+                    @if (dish.is_expired) {
+                      <span class="expiry-badge expired">Expired</span>
+                    } @else if (dish.expires_at) {
+                      <span class="expiry-badge active">Expires {{ dish.expires_at | date:'h:mm a' }}</span>
+                    }
                   }
                 </div>
               </div>

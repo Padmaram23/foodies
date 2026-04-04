@@ -1,0 +1,43 @@
+<div class="orders-page">
+  <h1>My Purchases</h1>
+
+  @if (loading()) {
+    <div class="loading-state">Loading orders...</div>
+  } @else if (orders().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">📦</div>
+      <h2>No purchases yet</h2>
+      <p>Your order history will appear here.</p>
+    </div>
+  } @else {
+    <div class="order-list">
+      @for (order of orders(); track order.id) {
+        <div class="order-card" [class.expanded]="expandedId === order.id">
+          <div class="order-summary" (click)="toggle(order.id)">
+            <div class="order-meta">
+              <span class="order-id">#{{ order.id.slice(0, 8).toUpperCase() }}</span>
+              <span class="order-date">{{ order.created_at | date:'MMM d, y · h:mm a' }}</span>
+            </div>
+            <div class="order-right">
+              <span class="order-total">₹{{ order.total_amount | number:'1.2-2' }}</span>
+              <span class="status-badge" [class]="order.status">{{ order.status }}</span>
+              <span class="expand-icon">{{ expandedId === order.id ? '▲' : '▼' }}</span>
+            </div>
+          </div>
+
+          @if (expandedId === order.id) {
+            <div class="order-items">
+              @for (item of order.items; track item.id) {
+                <div class="order-item">
+                  <span class="item-name">{{ item.dish_name }}</span>
+                  <span class="item-qty">× {{ item.quantity }}</span>
+                  <span class="item-subtotal">₹{{ item.subtotal | number:'1.2-2' }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

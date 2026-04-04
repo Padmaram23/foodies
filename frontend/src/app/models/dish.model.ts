@@ -11,6 +11,8 @@ export interface Dish {
   price: number;
   discount_percent?: number;
   discounted_price?: number;
+  sold_count: number;
+  available_quantity: number;
   created_at: string;
   expires_at: string | null;
   is_expired: boolean;

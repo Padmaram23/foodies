@@ -1,0 +1,49 @@
+<div class="cart-page">
+  <div class="cart-header">
+    <h1>Your Cart</h1>
+    <button class="btn-back" (click)="router.navigate(['/dashboard'])">← Back</button>
+  </div>
+
+  @if (cart.cartItems().length === 0) {
+    <div class="empty-cart">
+      <div class="empty-icon">🛒</div>
+      <h2>Your cart is empty</h2>
+      <p>Go back and add some dishes!</p>
+    </div>
+  } @else {
+    <div class="cart-items">
+      @for (item of cart.cartItems(); track item.dish_id) {
+        <div class="cart-item">
+          <div class="item-info">
+            <span class="item-name">{{ item.dish_name }}</span>
+            <span class="item-price">₹{{ item.unit_price }} × {{ item.quantity }}</span>
+          </div>
+          <div class="item-controls">
+            <div class="qty-control">
+              <button (click)="cart.updateQuantity(item.dish_id, item.quantity - 1)">−</button>
+              <span>{{ item.quantity }}</span>
+              <button (click)="cart.updateQuantity(item.dish_id, item.quantity + 1)">+</button>
+            </div>
+            <span class="item-subtotal">₹{{ item.unit_price * item.quantity | number:'1.2-2' }}</span>
+            <button class="btn-remove" (click)="cart.remove(item.dish_id)" aria-label="Remove">✕</button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="cart-summary">
+      <div class="summary-row total">
+        <span>Total</span>
+        <span>₹{{ cart.total() | number:'1.2-2' }}</span>
+      </div>
+
+      @if (error()) {
+        <div class="alert-error">{{ error() }}</div>
+      }
+
+      <button class="btn-pay" [disabled]="loading()" (click)="checkout()">
+        {{ loading() ? 'Redirecting to payment...' : 'Pay · ₹' + (cart.total() | number:'1.2-2') }}
+      </button>
+    </div>
+  }
+</div>

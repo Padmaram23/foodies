@@ -17,6 +17,7 @@ backend/
 │   ├── models/           # SQLAlchemy models (M)
 │   ├── controllers/      # Business logic (C)
 │   ├── views/            # API routes/endpoints (V)
+│   ├── services/         # External service wrappers (Stripe, email, SMS, etc.)
 │   └── config.py         # Configuration (DB connection)
 ├── migrations/           # Alembic database migrations
 ├── tests/                # Backend tests
