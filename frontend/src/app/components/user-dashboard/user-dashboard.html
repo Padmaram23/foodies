@@ -1,0 +1,62 @@
+<div class="home">
+  <div class="welcome-card">
+    <h1>Welcome, {{ auth.currentUser()?.name }} 👋</h1>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">Loading dishes...</div>
+  } @else if (dishes().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">🍱</div>
+      <h2>Nothing to eat here... yet</h2>
+      <p>We couldn't find anything decent for you to eat. Check in after sometime!</p>
+    </div>
+  } @else {
+    <div class="dish-grid">
+      @for (dish of dishes(); track dish.id) {
+        <div class="dish-card" (click)="toggle(dish.id)" [class.expanded]="expandedId === dish.id">
+          <div class="dish-main">
+            <span class="dish-name">{{ dish.name }}</span>
+            <div class="dish-price-row">
+              @if (dish.discount_percent) {
+                <span class="discount-badge">{{ dish.discount_percent }}% OFF</span>
+                <span class="price-final">₹{{ dish.discounted_price }}</span>
+                <span class="price-original">₹{{ dish.price }}</span>
+              } @else {
+                <span class="price-final">₹{{ dish.price }}</span>
+              }
+            </div>
+            <div class="seller-info">
+              <div class="seller-avatar">{{ dish.seller_name?.charAt(0)?.toUpperCase() }}</div>
+              <span class="seller-name">{{ dish.seller_name }}</span>
+              @if (dish.seller_type) {
+                <span class="seller-type-badge" [class]="dish.seller_type">
+                  {{ dish.seller_type === 'homemade' ? '🏠 Homemade' : '🍽️ Restaurant' }}
+                </span>
+              }
+            </div>
+          </div>
+
+          @if (expandedId === dish.id) {
+            <div class="dish-detail">
+              <div class="detail-row">
+                <span class="detail-label">Quantity</span>
+                <span class="detail-value">{{ dish.quantity }} serving{{ dish.quantity > 1 ? 's' : '' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Size</span>
+                <span class="detail-value">{{ dish.quantity_size }} {{ dish.quantity_unit }}</span>
+              </div>
+              @if (dish.whats_special) {
+                <div class="detail-special">
+                  <span class="detail-label">What's special</span>
+                  <p>✨ {{ dish.whats_special }}</p>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

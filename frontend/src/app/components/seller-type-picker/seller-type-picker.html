@@ -1,0 +1,36 @@
+<div class="picker-wrap">
+  <h2>What type of seller are you?</h2>
+  <p class="picker-sub">Choose how you'd like to sell on our platform</p>
+
+  <form [formGroup]="form">
+    <div class="seller-type-group">
+      <label class="seller-type-option" [class.selected]="form.get('seller_type')?.value === 'homemade'">
+        <input type="radio" formControlName="seller_type" value="homemade" />
+        <span class="type-icon">🏠</span>
+        <span class="type-label">Homemade</span>
+        <span class="type-desc">Cook from home</span>
+      </label>
+      <label class="seller-type-option" [class.selected]="form.get('seller_type')?.value === 'restaurant'">
+        <input type="radio" formControlName="seller_type" value="restaurant" />
+        <span class="type-icon">🍽️</span>
+        <span class="type-label">Restaurant</span>
+        <span class="type-desc">Professional kitchen</span>
+      </label>
+    </div>
+
+    @if (form.get('seller_type')?.invalid && form.get('seller_type')?.touched) {
+      <span class="field-error">Please select a seller type</span>
+    }
+  </form>
+
+  @if (error()) {
+    <div class="alert-error">{{ error() }}</div>
+  }
+
+  <div class="picker-actions">
+    <button class="btn-outline" type="button" (click)="cancelled.emit()">Cancel</button>
+    <button class="btn-seller" type="button" [disabled]="loading()" (click)="submit()">
+      {{ loading() ? 'Registering...' : 'Confirm' }}
+    </button>
+  </div>
+</div>

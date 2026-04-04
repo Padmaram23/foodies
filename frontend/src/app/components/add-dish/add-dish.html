@@ -1,0 +1,84 @@
+<div class="add-dish-wrap">
+  <div class="form-header">
+    <h2>Add a Dish</h2>
+    <button class="btn-close" type="button" (click)="cancelled.emit()" aria-label="Close">✕</button>
+  </div>
+
+  @if (error()) {
+    <div class="alert-error">{{ error() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="name">Dish Name</label>
+      <input id="name" type="text" formControlName="name" placeholder="e.g. Chicken Biryani"
+        [class.invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
+      @if (form.get('name')?.invalid && form.get('name')?.touched) {
+        <span class="field-error">Dish name is required</span>
+      }
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="quantity">Quantity</label>
+        <input id="quantity" type="number" formControlName="quantity" placeholder="e.g. 2" min="1"
+          [class.invalid]="form.get('quantity')?.invalid && form.get('quantity')?.touched" />
+        @if (form.get('quantity')?.invalid && form.get('quantity')?.touched) {
+          <span class="field-error">Min 1</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="quantity_size">Size</label>
+        <div class="input-unit-wrap">
+          <input id="quantity_size" type="number" formControlName="quantity_size" placeholder="e.g. 250" min="0.1" step="0.1"
+            [class.invalid]="form.get('quantity_size')?.invalid && form.get('quantity_size')?.touched" />
+          <select formControlName="quantity_unit" class="unit-select">
+            <option value="grams">g</option>
+            <option value="kg">kg</option>
+          </select>
+        </div>
+        @if (form.get('quantity_size')?.invalid && form.get('quantity_size')?.touched) {
+          <span class="field-error">Enter a valid size</span>
+        }
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="whats_special">What's Special? <span class="optional">(optional)</span></label>
+      <textarea id="whats_special" formControlName="whats_special"
+        placeholder="e.g. Made with grandma's secret recipe, no preservatives..."
+        rows="3"></textarea>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="price">{{ isRestaurant ? 'Original Price (₹)' : 'Price (₹)' }}</label>
+        <input id="price" type="number" formControlName="price" placeholder="e.g. 150" min="0" step="0.01"
+          [class.invalid]="form.get('price')?.invalid && form.get('price')?.touched" />
+        @if (form.get('price')?.invalid && form.get('price')?.touched) {
+          <span class="field-error">Enter a valid price</span>
+        }
+      </div>
+
+      @if (isRestaurant) {
+        <div class="field">
+          <label for="discount_percent">Discount % <span class="optional">(optional)</span></label>
+          <input id="discount_percent" type="number" formControlName="discount_percent"
+            placeholder="e.g. 30" min="1" max="99"
+            [class.invalid]="form.get('discount_percent')?.invalid && form.get('discount_percent')?.touched" />
+          @if (form.get('discount_percent')?.invalid && form.get('discount_percent')?.touched) {
+            <span class="field-error">1–99</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-outline" (click)="cancelled.emit()">Cancel</button>
+      <button type="submit" class="btn-primary" [disabled]="loading()">
+        {{ loading() ? 'Adding...' : 'Add Dish' }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,236 @@
+.sell-landing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.landing-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
+.landing-icon { font-size: 4rem; margin-bottom: 1rem; }
+
+h1 { font-size: 1.5rem; font-weight: 800; color: #111; margin: 0 0 0.75rem; }
+p  { color: #666; font-size: 0.95rem; margin: 0 0 2rem; line-height: 1.5; }
+
+.landing-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.btn-outline {
+  padding: 0.65rem 1.25rem; background: none;
+  border: 1px solid #d1d5db; border-radius: 8px;
+  font-size: 0.95rem; font-weight: 500; cursor: pointer; color: #555;
+  transition: background 0.2s;
+  &:hover { background: #f3f4f6; }
+}
+
+.btn-seller {
+  padding: 0.65rem 1.5rem; background: #f59e0b; color: #fff;
+  border: none; border-radius: 8px; font-size: 0.95rem;
+  font-weight: 600; cursor: pointer; transition: background 0.2s;
+  &:hover { background: #d97706; }
+}
+
+.sell-page { padding: 1rem 0; display: flex; flex-direction: column; gap: 1.5rem; }
+
+.sell-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+
+  h1 { margin: 0 0 0.2rem; font-size: 1.4rem; color: #111; }
+  p  { margin: 0; color: #666; font-size: 0.9rem; }
+}
+
+.btn-add {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.25rem;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  &:hover { background: #4f46e5; }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  gap: 0.75rem;
+
+  h2 { margin: 0; font-size: 1.25rem; color: #111; }
+  p  { margin: 0; color: #888; font-size: 0.9rem; max-width: 300px; line-height: 1.5; }
+}
+
+.empty-icon { font-size: 4rem; margin-bottom: 0.5rem; }
+
+.dish-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.dish-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dish-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dish-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.btn-delete {
+  background: none; border: none; cursor: pointer;
+  color: #ccc; padding: 0.2rem; border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+  display: flex; align-items: center;
+  &:hover { color: #ef4444; background: #fef2f2; }
+}
+
+.dish-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.meta-pill {
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.2rem 0.6rem;
+  background: #f3f4f6;
+  border-radius: 999px;
+  color: #555;
+}
+
+.dish-special {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.dish-date {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin-top: auto;
+}
+
+.date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.date-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: #fff;
+  border-radius: 10px;
+  border-left: 4px solid #6366f1;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.date-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #6366f1;
+}
+
+.date-count {
+  font-size: 0.78rem;
+  color: #aaa;
+  font-weight: 500;
+}
+
+.header-actions { display: flex; align-items: center; gap: 0.5rem; }
+
+.btn-settings {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0.5rem; background: none; border: 1px solid #e5e7eb;
+  border-radius: 8px; cursor: pointer; color: #888;
+  transition: background 0.2s, color 0.2s;
+  &:hover { background: #f5f3ff; color: #6366f1; border-color: #a5b4fc; }
+}
+
+.settings-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  flex-wrap: wrap;
+}
+
+.settings-label { font-size: 0.9rem; font-weight: 600; color: #333; white-space: nowrap; }
+
+.settings-input-wrap { display: flex; align-items: center; gap: 0.5rem; }
+
+.settings-input {
+  width: 80px; padding: 0.45rem 0.6rem;
+  border: 1px solid #d1d5db; border-radius: 8px;
+  font-size: 0.9rem; outline: none;
+  &:focus { border-color: #6366f1; }
+}
+
+.settings-unit { font-size: 0.85rem; color: #555; }
+.settings-hint { font-size: 0.8rem; color: #aaa; }
+
+.btn-save-settings {
+  padding: 0.45rem 1rem; background: #6366f1; color: #fff;
+  border: none; border-radius: 8px; font-size: 0.85rem;
+  font-weight: 600; cursor: pointer;
+  &:hover { background: #4f46e5; }
+}
+
+.dish-footer { display: flex; align-items: center; margin-top: auto; }
+
+.expiry-badge {
+  font-size: 0.72rem; font-weight: 600;
+  padding: 0.2rem 0.55rem; border-radius: 999px;
+  &.active { background: #dcfce7; color: #15803d; }
+  &.expired { background: #fef2f2; color: #b91c1c; }
+}

@@ -1,0 +1,19 @@
+<aside class="sidenav">
+  <div class="sidenav-brand">{{ appName }}</div>
+
+  <nav class="sidenav-links">
+    <a routerLink="/dashboard" routerLinkActive="active">
+      <span class="nav-icon">🏠</span> Home
+    </a>
+    <a class="nav-sell" routerLink="/sell" routerLinkActive="active" (click)="$event.preventDefault(); navigateToSell()">
+      <span class="nav-icon">🛒</span> Sell
+    </a>
+  </nav>
+
+  <div class="sidenav-footer">
+    <a class="profile-link" routerLink="/profile" routerLinkActive="active">
+      <div class="user-avatar">{{ auth.currentUser()?.name?.charAt(0)?.toUpperCase() }}</div>
+      <span class="user-name">{{ auth.currentUser()?.name }}</span>
+    </a>
+  </div>
+</aside>
