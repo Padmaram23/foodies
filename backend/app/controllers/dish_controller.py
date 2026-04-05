@@ -14,7 +14,7 @@ def get_dishes(seller_id: str):
 
 
 def get_available_dishes(exclude_seller_id: str):
-    """Return all non-expired, non-deleted dishes not belonging to the requesting user."""
+    """Return all non-expired, non-deleted dishes not belonging to the requesting user, with stock remaining."""
     now = datetime.now(timezone.utc)
     dishes = (Dish.query
               .filter(Dish.deleted_at.is_(None))
@@ -24,7 +24,8 @@ def get_available_dishes(exclude_seller_id: str):
               )
               .order_by(Dish.created_at.desc())
               .all())
-    return [d.to_dict() for d in dishes]
+    # Only return dishes that still have available quantity
+    return [d.to_dict() for d in dishes if (d.quantity or 0) - (d.sold_count or 0) > 0]
 
 
 def create_dish(seller_id: str, data: dict):

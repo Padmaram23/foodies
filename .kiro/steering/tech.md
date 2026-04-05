@@ -105,3 +105,4 @@ SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('D
 - **All model primary keys must be UUID** — use `db.String(36)` with `default=lambda: str(uuid.uuid4())`; never use auto-increment integers
 - **All models must use `AuditMixin`** from `app.models.mixins` — provides `created_at`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`; never add these fields manually
 - **All deletes must be soft deletes** — never call `db.session.delete()`. Use `record.soft_delete(deleted_by_id=user_id)` then `db.session.commit()`. Always filter active records with `.filter(Model.deleted_at.is_(None))`
+- **All external service integrations must live in `app/services/`** — one file per provider (e.g. `stripe_service.py`, `email_service.py`). Controllers must never make direct HTTP calls to third-party APIs; always go through a service wrapper in `app/services/`.

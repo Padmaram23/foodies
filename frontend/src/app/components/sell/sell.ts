@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { DishService } from '../../services/dish.service';
+import { EarningsService, Earnings } from '../../services/earnings.service';
+import { OrderService } from '../../services/order.service';
+import { Order } from '../../models/order.model';
 import { AddDishComponent } from '../add-dish/add-dish';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog';
 import { Dish } from '../../models/dish.model';
@@ -22,6 +25,10 @@ export class SellComponent implements OnInit {
   dishes = signal<Dish[]>([]);
   confirmDeleteId: string | null = null;
   deleting = false;
+  earnings = signal<Earnings | null>(null);
+  showHistory = signal(false);
+  receivedOrders = signal<Order[]>([]);
+  showOrders = signal(false);
 
   dishGroups = computed<DishGroup[]>(() => {
     const map = new Map<string, Dish[]>();
@@ -42,13 +49,19 @@ export class SellComponent implements OnInit {
   constructor(
     public auth: AuthService,
     public router: Router,
-    private dishService: DishService
+    private dishService: DishService,
+    private earningsService: EarningsService,
+    private orderService: OrderService
   ) {
     this.showPrompt = !auth.currentUser()?.is_seller;
   }
 
   ngOnInit() {
-    if (!this.showPrompt) this.loadDishes();
+    if (!this.showPrompt) {
+      this.loadDishes();
+      this.earningsService.getEarnings().subscribe({ next: e => this.earnings.set(e) });
+      this.orderService.getReceivedOrders().subscribe({ next: o => this.receivedOrders.set(o) });
+    }
   }
 
   loadDishes() {

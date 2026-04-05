@@ -13,22 +13,86 @@
 } @else {
   <div class="sell-page">
 
-    <!-- Header -->
+    <!-- Earnings card -->
+    @if (earnings()) {
+      <div class="earnings-card">
+        <div class="earnings-main">
+          <div>
+            <div class="earnings-label">{{ earnings()!.this_month_label }} Earnings</div>
+            <div class="earnings-amount">₹{{ earnings()!.this_month | number:'1.2-2' }}</div>
+          </div>
+          <button class="btn-history" (click)="showHistory.set(!showHistory())">
+            {{ showHistory() ? 'Hide History' : 'View History' }}
+          </button>
+        </div>
+        @if (showHistory() && earnings()!.history.length > 0) {
+          <div class="earnings-history">
+            @for (month of earnings()!.history; track month.key) {
+              <div class="history-row">
+                <span class="history-label">{{ month.label }}</span>
+                <span class="history-amount">₹{{ month.total | number:'1.2-2' }}</span>
+              </div>
+            }
+          </div>
+        }
+        @if (showHistory() && earnings()!.history.length === 0) {
+          <p class="no-history">No earnings history yet.</p>
+        }
+      </div>
+    }
+
+    <!-- Orders Received — standalone section -->
+    <div class="section-card">
+      <div class="section-header" (click)="showOrders.set(!showOrders())">
+        <div class="section-title">
+          <span class="section-icon">📬</span>
+          <span>Orders Received</span>
+          <span class="orders-count-badge">{{ receivedOrders().length }}</span>
+        </div>
+        <span class="expand-chevron">{{ showOrders() ? '▲' : '▼' }}</span>
+      </div>
+
+      @if (showOrders()) {
+        @if (receivedOrders().length === 0) {
+          <p class="no-orders">No orders received yet.</p>
+        } @else {
+          <div class="received-orders-list">
+            @for (order of receivedOrders(); track order.id) {
+              <div class="received-order-row">
+                <div class="ro-left">
+                  <span class="ro-id">#{{ order.id.slice(0, 8).toUpperCase() }}</span>
+                  <span class="ro-date">{{ order.created_at | date:'MMM d, y · h:mm a' }}</span>
+                  <div class="ro-items">
+                    @for (item of order.items; track item.id) {
+                      <span class="ro-item">{{ item.dish_name }} × {{ item.quantity }}</span>
+                    }
+                  </div>
+                </div>
+                <div class="ro-right">
+                  <span class="ro-total">₹{{ order.seller_total ?? order.total_amount | number:'1.2-2' }}</span>
+                  <span class="status-badge" [class]="order.status">{{ order.status }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      }
+    </div>
+
+    <!-- My Dishes header -->
     @if (!showAddForm()) {
       <div class="sell-header">
         <div class="sell-header-text">
           <h1>My Dishes</h1>
           <p>Manage your food listings</p>
         </div>
-        <div class="header-actions">
-          <button class="btn-add" (click)="onAddDish()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Add Dish
-          </button>
-        </div>
+        <button class="btn-add" (click)="onAddDish()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add Dish
+        </button>
       </div>
     }
 
@@ -66,29 +130,37 @@
           </div>
           <div class="dish-grid">
             @for (dish of group.dishes; track dish.id) {
-              <div class="dish-card">
+              <div class="dish-card" [class.sold-out]="dish.sold_count >= dish.quantity">
+                @if (dish.sold_count >= dish.quantity) {
+                  <div class="sold-out-ribbon">Sold Out</div>
+                }
                 <div class="dish-card-header">
                   <span class="dish-name">{{ dish.name }}</span>
-                  <button class="btn-delete" (click)="confirmDeleteId = dish.id" title="Remove dish" aria-label="Delete dish">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
-                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
-                      <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
-                    </svg>
-                  </button>
+                  @if (dish.sold_count < dish.quantity) {
+                    <button class="btn-delete" (click)="confirmDeleteId = dish.id" title="Remove dish" aria-label="Delete dish">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+                        <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                      </svg>
+                    </button>
+                  }
                 </div>
                 <div class="dish-meta">
                   <span class="meta-pill">{{ dish.quantity }} serving{{ dish.quantity > 1 ? 's' : '' }}</span>
                   <span class="meta-pill">{{ dish.quantity_size }} {{ dish.quantity_unit }}</span>
+                  <span class="meta-pill sold">🛒 {{ dish.sold_count }} sold</span>
                 </div>
                 @if (dish.whats_special) {
                   <p class="dish-special">✨ {{ dish.whats_special }}</p>
                 }
                 <div class="dish-footer">
-                  @if (dish.is_expired) {
-                    <span class="expiry-badge expired">Expired</span>
-                  } @else if (dish.expires_at) {
-                    <span class="expiry-badge active">Expires {{ dish.expires_at | date:'h:mm a' }}</span>
+                  @if (dish.sold_count < dish.quantity) {
+                    @if (dish.is_expired) {
+                      <span class="expiry-badge expired">Expired</span>
+                    } @else if (dish.expires_at) {
+                      <span class="expiry-badge active">Expires {{ dish.expires_at | date:'h:mm a' }}</span>
+                    }
                   }
                 </div>
               </div>

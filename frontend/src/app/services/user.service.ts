@@ -25,9 +25,11 @@ export class UserService {
     );
   }
 
-  becomeSeller(seller_type: string) {
-    return this.http.post<User>(`${this.API}/become-seller`, { seller_type }, { headers: this.headers() }).pipe(
-      tap(user => this.auth.currentUser.set(user))
-    );
+  becomeSeller(seller_type: string, business_name: string, address: string) {
+    return this.http.post<User>(
+      `${this.API}/become-seller`,
+      { seller_type, business_name, address },
+      { headers: this.headers() }
+    ).pipe(tap(user => this.auth.currentUser.set(user)));
   }
 }

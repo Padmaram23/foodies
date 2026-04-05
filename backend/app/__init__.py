@@ -38,16 +38,42 @@ def create_app():
     from app.views import auth
     from app.views import user
     from app.views import dish
+    from app.views import order
+    from app.views import earnings
+    from app.views import business_profile
     app.register_blueprint(api.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(user.bp)
     app.register_blueprint(dish.bp)
+    app.register_blueprint(order.bp)
+    app.register_blueprint(earnings.bp)
+    app.register_blueprint(business_profile.bp)
+
+    # Start background scheduler
+    _start_scheduler(app)
 
     # Seed default admin on startup
     with app.app_context():
         _seed_admin(app)
 
     return app
+
+
+def _start_scheduler(app):
+    from apscheduler.schedulers.background import BackgroundScheduler
+    from app.jobs.order_jobs import expire_stale_orders
+
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(
+        func=expire_stale_orders,
+        args=[app],
+        trigger='interval',
+        seconds=10,
+        id='expire_stale_orders',
+        replace_existing=True
+    )
+    scheduler.start()
+    print('[SCHEDULER] Started — expire_stale_orders every 10 seconds')
 
 
 def _seed_admin(app):

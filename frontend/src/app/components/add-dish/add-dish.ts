@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DishService } from '../../services/dish.service';
-import { AuthService } from '../../services/auth.service';
+import { BusinessProfileService } from '../../services/business-profile.service';
 import { Dish } from '../../models/dish.model';
 
 @Component({
@@ -12,17 +12,20 @@ import { Dish } from '../../models/dish.model';
   templateUrl: './add-dish.html',
   styleUrl: './add-dish.scss'
 })
-export class AddDishComponent {
+export class AddDishComponent implements OnInit {
   @Output() saved = new EventEmitter<Dish>();
   @Output() cancelled = new EventEmitter<void>();
 
   form: FormGroup;
   loading = signal(false);
   error = signal('');
+  isRestaurant = signal(false);
 
-  get isRestaurant() { return this.auth.currentUser()?.seller_type === 'restaurant'; }
-
-  constructor(private fb: FormBuilder, private dishService: DishService, public auth: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private dishService: DishService,
+    private bpService: BusinessProfileService
+  ) {
     this.form = this.fb.group({
       name:             ['', Validators.required],
       quantity:         [1, [Validators.required, Validators.min(1)]],
@@ -34,13 +37,19 @@ export class AddDishComponent {
     });
   }
 
+  ngOnInit() {
+    this.bpService.getProfile().subscribe({
+      next: bp => this.isRestaurant.set(bp?.seller_type === 'restaurant')
+    });
+  }
+
   onSubmit() {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.loading.set(true);
     this.error.set('');
 
     const value = { ...this.form.value };
-    if (!this.isRestaurant) delete value.discount_percent;
+    if (!this.isRestaurant()) delete value.discount_percent;
 
     this.dishService.addDish(value).subscribe({
       next: dish => { this.loading.set(false); this.saved.emit(dish); },

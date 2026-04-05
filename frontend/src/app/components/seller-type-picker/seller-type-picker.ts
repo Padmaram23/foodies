@@ -19,22 +19,32 @@ export class SellerTypePickerComponent {
   error = signal('');
 
   constructor(private fb: FormBuilder, private userService: UserService) {
-    this.form = this.fb.group({ seller_type: ['', Validators.required] });
+    this.form = this.fb.group({
+      seller_type:   ['', Validators.required],
+      business_name: ['', Validators.required],
+      address:       ['', Validators.required]
+    });
+  }
+
+  get businessNameLabel() {
+    return this.form.value.seller_type === 'restaurant' ? 'Restaurant Name' : 'Brand Name';
+  }
+
+  get businessNamePlaceholder() {
+    return this.form.value.seller_type === 'restaurant'
+      ? 'e.g. Spice Garden'
+      : "e.g. Amma's Kitchen";
   }
 
   submit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.loading.set(true);
     this.error.set('');
 
-    this.userService.becomeSeller(this.form.value.seller_type).subscribe({
-      next: () => {
-        this.loading.set(false);
-        this.registered.emit();
-      },
+    const { seller_type, business_name, address } = this.form.value;
+
+    this.userService.becomeSeller(seller_type, business_name, address).subscribe({
+      next: () => { this.loading.set(false); this.registered.emit(); },
       error: err => {
         this.loading.set(false);
         this.error.set(err.error?.message || 'Failed to register as seller');

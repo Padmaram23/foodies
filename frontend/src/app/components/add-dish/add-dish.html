@@ -53,7 +53,7 @@
 
     <div class="field-row">
       <div class="field">
-        <label for="price">{{ isRestaurant ? 'Original Price (₹)' : 'Price (₹)' }}</label>
+        <label for="price">{{ isRestaurant() ? 'Original Price (₹)' : 'Price (₹)' }}</label>
         <input id="price" type="number" formControlName="price" placeholder="e.g. 150" min="0" step="0.01"
           [class.invalid]="form.get('price')?.invalid && form.get('price')?.touched" />
         @if (form.get('price')?.invalid && form.get('price')?.touched) {
@@ -61,7 +61,7 @@
         }
       </div>
 
-      @if (isRestaurant) {
+      @if (isRestaurant()) {
         <div class="field">
           <label for="discount_percent">Discount % <span class="optional">(optional)</span></label>
           <input id="discount_percent" type="number" formControlName="discount_percent"

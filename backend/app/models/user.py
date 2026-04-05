@@ -14,7 +14,6 @@ class User(AuditMixin, db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum('admin', 'user', 'seller'), nullable=False, default='user')
     is_seller = db.Column(db.Boolean, nullable=False, default=False)
-    seller_type = db.Column(db.Enum('homemade', 'restaurant'), nullable=True)
 
     def set_password(self, password: str):
         self.password_hash = bcrypt.hashpw(
@@ -34,5 +33,4 @@ class User(AuditMixin, db.Model):
             'phone': self.phone,
             'role': self.role,
             'is_seller': self.is_seller,
-            'seller_type': self.seller_type
         }

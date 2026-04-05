@@ -60,3 +60,15 @@
   &:hover:not(:disabled) { background: #d97706; }
   &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
+
+.field {
+  display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem;
+  label { font-size: 0.875rem; font-weight: 500; color: #333; }
+  input, textarea {
+    padding: 0.65rem 0.875rem; border: 1px solid #d1d5db;
+    border-radius: 8px; font-size: 0.95rem; outline: none; font-family: inherit;
+    transition: border-color 0.2s; resize: vertical;
+    &:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+    &.invalid { border-color: #ef4444; }
+  }
+}

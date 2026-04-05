@@ -29,6 +29,18 @@ export const routes: Routes = [
         loadComponent: () => import('./components/sell/sell').then(m => m.SellComponent)
       },
       {
+        path: 'cart',
+        loadComponent: () => import('./components/cart/cart').then(m => m.CartComponent)
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./components/my-orders/my-orders').then(m => m.MyOrdersComponent)
+      },
+      {
+        path: 'order-success',
+        loadComponent: () => import('./components/order-success/order-success').then(m => m.OrderSuccessComponent)
+      },
+      {
         path: 'become-seller',
         loadComponent: () => import('./components/become-seller/become-seller').then(m => m.BecomeSellerComponent)
       },
