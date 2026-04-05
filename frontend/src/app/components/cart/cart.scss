@@ -50,7 +50,9 @@
   button {
     width: 28px; height: 28px; background: #f9fafb; border: none;
     font-size: 1rem; cursor: pointer; color: #555;
-    &:hover { background: #ede9fe; color: #6366f1; }
+    transition: background 0.15s, color 0.15s;
+    &:hover:not(:disabled) { background: #ede9fe; color: #6366f1; }
+    &:disabled { color: #d1d5db; cursor: not-allowed; background: #f9fafb; }
   }
   span { min-width: 28px; text-align: center; font-size: 0.875rem; font-weight: 600; }
 }

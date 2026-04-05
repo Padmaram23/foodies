@@ -14,6 +14,7 @@ export class MyOrdersComponent implements OnInit {
   orders = signal<Order[]>([]);
   loading = signal(true);
   expandedId: string | null = null;
+  selectedSeller: any = null;
 
   constructor(private orderService: OrderService) {}
 
@@ -26,5 +27,10 @@ export class MyOrdersComponent implements OnInit {
 
   toggle(id: string) {
     this.expandedId = this.expandedId === id ? null : id;
+  }
+
+  showSeller(item: any, event: Event) {
+    event.stopPropagation();
+    this.selectedSeller = this.selectedSeller?.seller_id === item.seller_id ? null : item;
   }
 }

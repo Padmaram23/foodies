@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.controllers.order_controller import create_order, confirm_payment, get_my_orders
+from app.controllers.order_controller import create_order, confirm_payment, get_my_orders, get_seller_orders
 
 bp = Blueprint('order', __name__, url_prefix='/api/orders')
 
@@ -10,6 +10,13 @@ bp = Blueprint('order', __name__, url_prefix='/api/orders')
 def my_orders():
     buyer_id = get_jwt_identity()
     return jsonify(get_my_orders(buyer_id)), 200
+
+
+@bp.route('/received', methods=['GET'])
+@jwt_required()
+def received_orders():
+    seller_id = get_jwt_identity()
+    return jsonify(get_seller_orders(seller_id)), 200
 
 
 @bp.route('', methods=['POST'])

@@ -17,7 +17,6 @@ export interface User {
   phone?: string;
   role: 'admin' | 'user' | 'seller';
   is_seller: boolean;
-  seller_type?: 'homemade' | 'restaurant';
 }
 
 export interface LoginResponse {

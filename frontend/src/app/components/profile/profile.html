@@ -119,9 +119,75 @@
         <h3>You're a Seller</h3>
         <p>
           Seller type:
-          <strong>{{ auth.currentUser()?.seller_type === 'homemade' ? '🏠 Homemade' : '🍽️ Restaurant' }}</strong>
+          <strong>{{ bpForm.get('seller_type')?.value === 'homemade' ? '🏠 Homemade' : '🍽️ Restaurant' }}</strong>
         </p>
       </div>
+    </div>
+
+    <!-- Business Profile -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Business Profile</h2>
+        @if (!editingBp()) {
+          <button class="btn-icon" (click)="editingBp.set(true)" title="Edit business profile" aria-label="Edit business profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+        }
+      </div>
+
+      @if (bpSuccessMsg()) { <div class="alert-success">{{ bpSuccessMsg() }}</div> }
+      @if (bpErrorMsg())   { <div class="alert-error">{{ bpErrorMsg() }}</div> }
+
+      @if (!editingBp()) {
+        <div class="profile-details">
+          <div class="detail-row">
+            <span class="detail-icon">🏪</span>
+            <div>
+              <div class="detail-label">{{ businessNameLabel }}</div>
+              <div class="detail-value">{{ bpForm.get('business_name')?.value || '—' }}</div>
+            </div>
+          </div>
+          <div class="detail-row">
+            <span class="detail-icon">📍</span>
+            <div>
+              <div class="detail-label">Address</div>
+              <div class="detail-value">{{ bpForm.get('address')?.value || '—' }}</div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (editingBp()) {
+        <form [formGroup]="bpForm" (ngSubmit)="onSaveBp()">
+          <div class="field">
+            <label>{{ businessNameLabel }}</label>
+            <input type="text" formControlName="business_name"
+              [placeholder]="bpForm.get('seller_type')?.value === 'restaurant' ? 'e.g. Spice Garden' : 'e.g. Amma\'s Kitchen'"
+              [class.invalid]="bpForm.get('business_name')?.invalid && bpForm.get('business_name')?.touched" />
+            @if (bpForm.get('business_name')?.invalid && bpForm.get('business_name')?.touched) {
+              <span class="field-error">Business name is required</span>
+            }
+          </div>
+          <div class="field">
+            <label>Address</label>
+            <textarea formControlName="address" placeholder="e.g. 12 Main Street, Chennai" rows="2"
+              [class.invalid]="bpForm.get('address')?.invalid && bpForm.get('address')?.touched"></textarea>
+            @if (bpForm.get('address')?.invalid && bpForm.get('address')?.touched) {
+              <span class="field-error">Address is required</span>
+            }
+          </div>
+          <div class="edit-actions">
+            <button type="button" class="btn-outline" (click)="editingBp.set(false)">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="savingBp()">
+              {{ savingBp() ? 'Saving...' : 'Save' }}
+            </button>
+          </div>
+        </form>
+      }
     </div>
   }
 

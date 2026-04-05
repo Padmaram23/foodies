@@ -31,4 +31,8 @@ export class OrderService {
   getMyOrders() {
     return this.http.get<Order[]>(this.API, { headers: this.headers() });
   }
+
+  getReceivedOrders() {
+    return this.http.get<Order[]>(`${this.API}/received`, { headers: this.headers() });
+  }
 }

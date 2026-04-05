@@ -41,22 +41,58 @@
       </div>
     }
 
-    <!-- Header -->
+    <!-- Orders Received — standalone section -->
+    <div class="section-card">
+      <div class="section-header" (click)="showOrders.set(!showOrders())">
+        <div class="section-title">
+          <span class="section-icon">📬</span>
+          <span>Orders Received</span>
+          <span class="orders-count-badge">{{ receivedOrders().length }}</span>
+        </div>
+        <span class="expand-chevron">{{ showOrders() ? '▲' : '▼' }}</span>
+      </div>
+
+      @if (showOrders()) {
+        @if (receivedOrders().length === 0) {
+          <p class="no-orders">No orders received yet.</p>
+        } @else {
+          <div class="received-orders-list">
+            @for (order of receivedOrders(); track order.id) {
+              <div class="received-order-row">
+                <div class="ro-left">
+                  <span class="ro-id">#{{ order.id.slice(0, 8).toUpperCase() }}</span>
+                  <span class="ro-date">{{ order.created_at | date:'MMM d, y · h:mm a' }}</span>
+                  <div class="ro-items">
+                    @for (item of order.items; track item.id) {
+                      <span class="ro-item">{{ item.dish_name }} × {{ item.quantity }}</span>
+                    }
+                  </div>
+                </div>
+                <div class="ro-right">
+                  <span class="ro-total">₹{{ order.seller_total ?? order.total_amount | number:'1.2-2' }}</span>
+                  <span class="status-badge" [class]="order.status">{{ order.status }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      }
+    </div>
+
+    <!-- My Dishes header -->
     @if (!showAddForm()) {
       <div class="sell-header">
         <div class="sell-header-text">
           <h1>My Dishes</h1>
           <p>Manage your food listings</p>
         </div>
-        <div class="header-actions">
-          <button class="btn-add" (click)="onAddDish()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Add Dish
-          </button>
-        </div>
+        <button class="btn-add" (click)="onAddDish()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add Dish
+        </button>
       </div>
     }
 

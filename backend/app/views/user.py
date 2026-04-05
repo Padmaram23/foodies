@@ -30,11 +30,15 @@ def update_profile():
 @jwt_required()
 def become_seller_route():
     user_id = get_jwt_identity()
-    data = request.get_json()
-    seller_type = data.get('seller_type') if data else None
+    data = request.get_json() or {}
+    seller_type   = data.get('seller_type')
+    business_name = data.get('business_name', '').strip()
+    address       = data.get('address', '').strip()
+
     if not seller_type:
-        return jsonify({'message': 'seller_type is required (homemade or restaurant)'}), 400
-    result, error = become_seller(user_id, seller_type)
+        return jsonify({'message': 'seller_type is required'}), 400
+
+    result, error = become_seller(user_id, seller_type, business_name, address)
     if error:
         return jsonify({'message': error}), 400
     return jsonify(result), 200

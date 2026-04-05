@@ -3,6 +3,7 @@ from datetime import datetime, timezone, timedelta
 from app import db
 from app.models.mixins import AuditMixin
 from app.models.dish_settings import DishSettings, DEFAULT_EXPIRY_MINUTES
+from app.models.business_profile import BusinessProfile
 
 
 class Dish(AuditMixin, db.Model):
@@ -41,11 +42,15 @@ class Dish(AuditMixin, db.Model):
         price = float(self.price) if self.price is not None else 0
         discount = self.discount_percent or 0
         discounted_price = round(price * (1 - discount / 100), 2) if discount else None
+        bp = BusinessProfile.query.filter_by(seller_id=self.seller_id).first()
+        display_name = bp.business_name if bp else (self.seller.name if self.seller else None)
+        seller_type = bp.seller_type if bp else None
+
         return {
             'id': self.id,
             'seller_id': self.seller_id,
-            'seller_name': self.seller.name if self.seller else None,
-            'seller_type': self.seller.seller_type if self.seller else None,
+            'seller_name': display_name,
+            'seller_type': seller_type,
             'name': self.name,
             'quantity': self.quantity,
             'quantity_size': self.quantity_size,

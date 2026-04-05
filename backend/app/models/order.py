@@ -44,6 +44,26 @@ class OrderItem(db.Model):
     unit_price = db.Column(db.Numeric(10, 2), nullable=False)
 
     def to_dict(self):
+        dish = None
+        try:
+            from app.models.dish import Dish
+            dish = Dish.query.filter_by(id=self.dish_id).first()
+        except Exception:
+            pass
+
+        display_name = None
+        seller_type = None
+        if dish and dish.seller:
+            display_name = dish.seller.name
+            try:
+                from app.models.business_profile import BusinessProfile
+                bp = BusinessProfile.query.filter_by(seller_id=dish.seller_id).first()
+                if bp:
+                    display_name = bp.business_name
+                    seller_type = bp.seller_type
+            except Exception:
+                pass
+
         return {
             'id': self.id,
             'dish_id': self.dish_id,
@@ -51,4 +71,9 @@ class OrderItem(db.Model):
             'quantity': self.quantity,
             'unit_price': float(self.unit_price),
             'subtotal': float(self.unit_price) * self.quantity,
+            'seller_id': dish.seller_id if dish and dish.seller else None,
+            'seller_name': display_name,
+            'seller_type': seller_type,
+            'seller_phone': dish.seller.phone if dish and dish.seller else None,
+            'seller_email': dish.seller.email if dish and dish.seller else None,
         }

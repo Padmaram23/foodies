@@ -36,10 +36,10 @@ export class LoginComponent {
     this.auth.login(this.form.value).subscribe({
       next: res => {
         this.loading.set(false);
-        const { role, is_seller, seller_type } = res.user;
+        const { role, is_seller } = res.user;
         if (role === 'admin') {
           this.router.navigate(['/admin/dashboard']);
-        } else if (is_seller && seller_type === 'restaurant') {
+        } else if (is_seller) {
           this.router.navigate(['/sell']);
         } else {
           this.router.navigate(['/dashboard']);

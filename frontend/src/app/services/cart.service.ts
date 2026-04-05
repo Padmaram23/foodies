@@ -30,6 +30,7 @@ export class CartService {
         dish_name: dish.name,
         unit_price: price,
         quantity: Math.min(quantity, available),
+        available_quantity: available,
         discount_percent: dish.discount_percent
       }];
     });
@@ -37,7 +38,11 @@ export class CartService {
 
   updateQuantity(dish_id: string, quantity: number) {
     if (quantity < 1) { this.remove(dish_id); return; }
-    this.items.update(list => list.map(i => i.dish_id === dish_id ? { ...i, quantity } : i));
+    this.items.update(list => list.map(i =>
+      i.dish_id === dish_id
+        ? { ...i, quantity: Math.min(quantity, i.available_quantity) }
+        : i
+    ));
   }
   remove(dish_id: string) {
     this.items.update(list => list.filter(i => i.dish_id !== dish_id));

@@ -15,6 +15,36 @@ def get_my_orders(buyer_id: str):
     return [o.to_dict() for o in orders]
 
 
+def get_seller_orders(seller_id: str):
+    """Orders containing dishes belonging to this seller — only show seller's own items."""
+    orders = (Order.query
+              .join(OrderItem, OrderItem.order_id == Order.id)
+              .join(Dish, Dish.id == OrderItem.dish_id)
+              .filter(Dish.seller_id == seller_id)
+              .filter(Order.status.in_(['pending', 'paid']))
+              .order_by(Order.created_at.desc())
+              .distinct()
+              .all())
+
+    result = []
+    for order in orders:
+        # Only include items that belong to this seller
+        seller_items = [
+            item.to_dict() for item in order.items
+            if Dish.query.filter_by(id=item.dish_id, seller_id=seller_id).first()
+        ]
+        if seller_items:
+            order_dict = order.to_dict()
+            order_dict['items'] = seller_items
+            # Recalculate total for only this seller's items
+            order_dict['seller_total'] = round(
+                sum(i['subtotal'] for i in seller_items), 2
+            )
+            result.append(order_dict)
+
+    return result
+
+
 def create_order(buyer_id: str, items: list):
     if not items:
         return None, 'Cart is empty'

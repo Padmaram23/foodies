@@ -19,21 +19,40 @@
               <span class="order-date">{{ order.created_at | date:'MMM d, y · h:mm a' }}</span>
             </div>
             <div class="order-right">
-              <span class="order-total">₹{{ order.total_amount | number:'1.2-2' }}</span>
               <span class="status-badge" [class]="order.status">{{ order.status }}</span>
+              <span class="order-total">₹{{ order.total_amount | number:'1.2-2' }}</span>
               <span class="expand-icon">{{ expandedId === order.id ? '▲' : '▼' }}</span>
-            </div>
-          </div>
+            </div>          </div>
 
           @if (expandedId === order.id) {
             <div class="order-items">
-              @for (item of order.items; track item.id) {
-                <div class="order-item">
-                  <span class="item-name">{{ item.dish_name }}</span>
-                  <span class="item-qty">× {{ item.quantity }}</span>
-                  <span class="item-subtotal">₹{{ item.subtotal | number:'1.2-2' }}</span>
-                </div>
-              }
+              <table class="items-table">
+                <thead>
+                  <tr>
+                    <th>Dish</th>
+                    <th>Seller</th>
+                    <th class="col-right">Qty</th>
+                    <th class="col-right">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of order.items; track item.id) {
+                    <tr>
+                      <td class="td-name">{{ item.dish_name }}</td>
+                      <td>
+                        @if (item.seller_name) {
+                          <div class="item-seller" (click)="showSeller(item, $event)">
+                            <div class="seller-avatar-sm">{{ item.seller_name.charAt(0).toUpperCase() }}</div>
+                            <span class="seller-name-sm">{{ item.seller_name }}</span>
+                          </div>
+                        }
+                      </td>
+                      <td class="col-right item-qty">× {{ item.quantity }}</td>
+                      <td class="col-right item-subtotal">₹{{ item.subtotal | number:'1.2-2' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
             </div>
           }
         </div>
@@ -41,3 +60,32 @@
     </div>
   }
 </div>
+
+@if (selectedSeller) {
+  <div class="seller-popup-backdrop" (click)="selectedSeller = null">
+    <div class="seller-popup" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <div class="popup-avatar">{{ selectedSeller.seller_name?.charAt(0)?.toUpperCase() }}</div>
+        <div>
+          <div class="popup-name">{{ selectedSeller.seller_name }}</div>
+          <span class="seller-type-badge" [class]="selectedSeller.seller_type">
+            {{ selectedSeller.seller_type === 'homemade' ? '🏠 Homemade' : '🍽️ Restaurant' }}
+          </span>
+        </div>
+        <button class="popup-close" (click)="selectedSeller = null">✕</button>
+      </div>
+      @if (selectedSeller.seller_email) {
+        <div class="popup-detail">
+          <span class="popup-label">Email</span>
+          <span>{{ selectedSeller.seller_email }}</span>
+        </div>
+      }
+      @if (selectedSeller.seller_phone) {
+        <div class="popup-detail">
+          <span class="popup-label">Phone</span>
+          <span>{{ selectedSeller.seller_phone }}</span>
+        </div>
+      }
+    </div>
+  </div>
+}
