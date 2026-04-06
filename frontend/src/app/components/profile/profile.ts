@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { BusinessProfileService } from '../../services/business-profile.service';
+import { ReviewService } from '../../services/review.service';
+import { Review } from '../../models/review.model';
 
 @Component({
   selector: 'app-profile',
@@ -24,12 +26,18 @@ export class ProfileComponent implements OnInit {
   bpErrorMsg = signal('');
   editing = signal(false);
   editingBp = signal(false);
+  reviews = signal<Review[]>([]);
+  avgRating = signal<number | null>(null);
+  reviewCount = signal(0);
+  showReviews = signal(false);
+  bp = signal<{ business_name: string; address: string; seller_type: string } | null>(null);
 
   constructor(
     private fb: FormBuilder,
     public auth: AuthService,
     private userService: UserService,
     private bpService: BusinessProfileService,
+    private reviewService: ReviewService,
     public router: Router
   ) {}
 
@@ -48,7 +56,22 @@ export class ProfileComponent implements OnInit {
 
     if (this.isSeller) {
       this.bpService.getProfile().subscribe({
-        next: bp => { if (bp) this.bpForm.patchValue(bp); }
+        next: profile => {
+          if (profile?.business_name) {
+            this.bp.set(profile as any);
+            this.bpForm.patchValue(profile);
+            // Load reviews for this business
+            if (profile.id) {
+              this.reviewService.getBusinessReviews(profile.id).subscribe({
+                next: result => {
+                  this.reviews.set(result.reviews);
+                  this.avgRating.set(result.average_rating);
+                  this.reviewCount.set(result.count);
+                }
+              });
+            }
+          }
+        }
       });
     }
   }
@@ -79,7 +102,8 @@ export class ProfileComponent implements OnInit {
     this.bpErrorMsg.set('');
 
     this.bpService.saveProfile(this.bpForm.value).subscribe({
-      next: () => {
+      next: saved => {
+        this.bp.set(saved as any);
         this.savingBp.set(false);
         this.editingBp.set(false);
         this.bpSuccessMsg.set('Business profile updated');
@@ -95,7 +119,7 @@ export class ProfileComponent implements OnInit {
   get isAdmin()  { return this.auth.currentUser()?.role === 'admin'; }
 
   get businessNameLabel() {
-    return this.bpForm.get('seller_type')?.value === 'restaurant'
+    return (this.bp()?.seller_type || this.bpForm.get('seller_type')?.value) === 'restaurant'
       ? 'Restaurant Name' : 'Brand Name';
   }
 

@@ -21,7 +21,7 @@ export class UserService {
 
   updateProfile(data: Partial<User>) {
     return this.http.put<User>(`${this.API}/profile`, data, { headers: this.headers() }).pipe(
-      tap(user => this.auth.currentUser.set(user))
+      tap(user => this.auth.setUser(user))
     );
   }
 
@@ -30,6 +30,6 @@ export class UserService {
       `${this.API}/become-seller`,
       { seller_type, business_name, address },
       { headers: this.headers() }
-    ).pipe(tap(user => this.auth.currentUser.set(user)));
+    ).pipe(tap(user => this.auth.setUser(user)));
   }
 }

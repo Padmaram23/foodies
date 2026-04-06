@@ -46,11 +46,28 @@ class Dish(AuditMixin, db.Model):
         display_name = bp.business_name if bp else (self.seller.name if self.seller else None)
         seller_type = bp.seller_type if bp else None
 
+        # Average rating for this business
+        avg_rating = None
+        review_count = 0
+        if bp:
+            from app.models.review import Review
+            from sqlalchemy import func
+            from app import db
+            result = db.session.query(
+                func.avg(Review.rating), func.count(Review.id)
+            ).filter_by(business_profile_id=bp.id).filter(Review.deleted_at.is_(None)).first()
+            if result and result[1]:
+                avg_rating = round(float(result[0]), 1)
+                review_count = result[1]
+
         return {
             'id': self.id,
             'seller_id': self.seller_id,
             'seller_name': display_name,
             'seller_type': seller_type,
+            'seller_avg_rating': avg_rating,
+            'seller_review_count': review_count,
+            'business_profile_id': bp.id if bp else None,
             'name': self.name,
             'quantity': self.quantity,
             'quantity_size': self.quantity_size,

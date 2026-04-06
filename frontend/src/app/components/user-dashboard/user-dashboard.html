@@ -57,14 +57,34 @@
                   <span class="price-final">₹{{ dish.price }}</span>
                 }
               </div>
-              <div class="seller-info">
+              <div class="seller-info" (click)="openBusinessReviews(dish, $event)" title="View reviews">
                 <div class="seller-avatar">{{ dish.seller_name?.charAt(0)?.toUpperCase() }}</div>
-                <span class="seller-name">{{ dish.seller_name }}</span>
-                @if (dish.seller_type) {
-                  <span class="seller-type-badge" [class]="dish.seller_type">
-                    {{ dish.seller_type === 'homemade' ? '🏠 Homemade' : '🍽️ Restaurant' }}
-                  </span>
-                }
+                <div class="seller-details seller-clickable">
+                  <div class="seller-name-row">
+                    <span class="seller-name">{{ dish.seller_name }}</span>
+                    @if (dish.seller_type) {
+                      <span class="seller-type-badge" [class]="dish.seller_type">
+                        {{ dish.seller_type === 'homemade' ? '🏠 Homemade' : '🍽️ Restaurant' }}
+                      </span>
+                    }
+                  </div>
+                  <div class="seller-rating-row">
+                    @if (dish.seller_avg_rating) {
+                      <span class="rating-value">{{ dish.seller_avg_rating }}</span>
+                      <span class="stars-display">
+                        @for (s of [1,2,3,4,5]; track s) {
+                          <span [class]="s <= dish.seller_avg_rating! ? 'star filled' : 'star'">★</span>
+                        }
+                      </span>
+                    } @else {
+                      <span class="stars-display">
+                        @for (s of [1,2,3,4,5]; track s) {
+                          <span class="star">★</span>
+                        }
+                      </span>
+                    }
+                    <span class="review-count">({{ dish.seller_review_count || 0 }} reviews)</span>
+                  </div>                </div>
               </div>
             </div>
             <span class="expand-icon">{{ expandedId === dish.id ? '▲' : '▼' }}</span>
@@ -105,6 +125,24 @@
                   {{ isMaxed(dish) ? 'Max Added' : 'Add to Cart' }}
                 </button>
               </div>
+
+              <!-- Reviews -->
+              @if (dishReviews[dish.id]?.length) {
+                <div class="dish-reviews">
+                  <div class="reviews-title">Reviews</div>
+                  @for (review of dishReviews[dish.id]; track review.id) {
+                    <div class="review-item">
+                      <div class="review-top">
+                        <span class="review-stars">{{ '★'.repeat(review.rating) }}{{ '☆'.repeat(5 - review.rating) }}</span>
+                        <span class="review-buyer">{{ review.buyer_name }}</span>
+                      </div>
+                      @if (review.comment) {
+                        <p class="review-comment">{{ review.comment }}</p>
+                      }
+                    </div>
+                  }
+                </div>
+              }
             </div>
           }
 
@@ -113,3 +151,51 @@
     </div>
   }
 </div>
+
+@if (businessPopup) {
+  <div class="bp-backdrop" (click)="businessPopup = null">
+    <div class="bp-popup" (click)="$event.stopPropagation()">
+      <div class="bp-header">
+        <div class="bp-avatar">{{ businessPopup.dish.seller_name?.charAt(0)?.toUpperCase() }}</div>
+        <div class="bp-info">
+          <div class="bp-name">{{ businessPopup.dish.seller_name }}</div>
+          @if (businessPopup.dish.seller_avg_rating) {
+            <div class="bp-rating-row">
+              <span class="bp-rating-val">{{ businessPopup.dish.seller_avg_rating }}</span>
+              <span class="bp-stars">
+                @for (s of [1,2,3,4,5]; track s) {
+                  <span [class]="s <= businessPopup.dish.seller_avg_rating! ? 'star filled' : 'star'">★</span>
+                }
+              </span>
+              <span class="bp-count">({{ businessPopup.dish.seller_review_count }} reviews)</span>
+            </div>
+          }
+        </div>
+        <button class="bp-close" (click)="businessPopup = null">✕</button>
+      </div>
+
+      @if (businessPopup.reviews.length === 0) {
+        <p class="bp-empty">No reviews yet.</p>
+      } @else {
+        <div class="bp-reviews">
+          @for (r of businessPopup.reviews; track r.id) {
+            <div class="bp-review-item">
+              <div class="bp-review-top">
+                <span class="bp-review-stars">
+                  @for (s of [1,2,3,4,5]; track s) {
+                    <span [class]="s <= r.rating ? 'star filled' : 'star'">★</span>
+                  }
+                </span>
+                <span class="bp-review-buyer">{{ r.buyer_name }}</span>
+                <span class="bp-review-dish">· {{ r.dish_name }}</span>
+              </div>
+              @if (r.comment) {
+                <p class="bp-review-comment">{{ r.comment }}</p>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

@@ -33,6 +33,7 @@
                     <th>Seller</th>
                     <th class="col-right">Qty</th>
                     <th class="col-right">Price</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -49,8 +50,21 @@
                       </td>
                       <td class="col-right item-qty">× {{ item.quantity }}</td>
                       <td class="col-right item-subtotal">₹{{ item.subtotal | number:'1.2-2' }}</td>
+                      <td class="col-right">
+                        @if (order.status === 'paid' && isReviewable(order.id, item.dish_id)) {
+                          <button class="btn-rate" (click)="openReview(order.id, item.dish_id)">⭐ Rate</button>
+                        }
+                      </td>
                     </tr>
-                  }
+                    @if (activeReview?.order_id === order.id && activeReview?.dish_id === item.dish_id) {
+                      <tr><td colspan="5" style="padding:0">
+                        <app-review-form
+                          [item]="activeReview!"
+                          (submitted)="onReviewSubmitted()"
+                          (cancelled)="activeReview = null"
+                        />
+                      </td></tr>
+                    }                  }
                 </tbody>
               </table>
             </div>

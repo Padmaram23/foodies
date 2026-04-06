@@ -71,6 +71,18 @@
   gap: 0.5rem;
 }
 
+.seller-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.seller-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .seller-avatar {
   width: 24px;
   height: 24px;
@@ -282,3 +294,101 @@
 }
 
 .low-stock { color: #ef4444; font-weight: 700; }
+
+.dish-reviews {
+  border-top: 1px solid #f3f4f6;
+  padding-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.reviews-title { font-size: 0.78rem; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.04em; }
+
+.review-item { display: flex; flex-direction: column; gap: 0.2rem; }
+
+.review-top { display: flex; align-items: center; gap: 0.5rem; }
+
+.review-stars { color: #f59e0b; font-size: 0.85rem; letter-spacing: 1px; }
+
+.review-buyer { font-size: 0.78rem; color: #888; font-weight: 500; }
+
+.review-comment { margin: 0; font-size: 0.82rem; color: #555; line-height: 1.4; }
+
+.seller-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.stars-display { display: flex; gap: 1px; }
+
+.star {
+  font-size: 0.85rem;
+  color: #d1d5db;
+  &.filled { color: #f59e0b; }
+}
+
+.rating-value { font-size: 0.78rem; font-weight: 700; color: #f59e0b; }
+
+.review-count { font-size: 0.75rem; color: #aaa; }
+
+.seller-clickable { cursor: pointer; }
+.seller-info:hover .seller-details { text-decoration: underline; text-decoration-color: #d1d5db; }
+
+// Business popup
+.bp-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center; z-index: 999;
+}
+
+.bp-popup {
+  background: #fff; border-radius: 14px; padding: 1.5rem;
+  max-width: 420px; width: 90%; max-height: 80vh; overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  display: flex; flex-direction: column; gap: 1rem;
+  animation: pop-in 0.15s ease;
+}
+
+@keyframes pop-in {
+  from { transform: scale(0.92); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.bp-header { display: flex; align-items: center; gap: 0.75rem; }
+
+.bp-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #fff; font-size: 1.2rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+.bp-info { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; }
+.bp-name { font-size: 1rem; font-weight: 700; color: #111; }
+
+.bp-rating-row { display: flex; align-items: center; gap: 0.3rem; }
+.bp-rating-val { font-size: 0.85rem; font-weight: 700; color: #f59e0b; }
+.bp-stars { display: flex; gap: 1px; }
+.bp-count { font-size: 0.78rem; color: #aaa; }
+
+.bp-close {
+  margin-left: auto; background: none; border: none;
+  font-size: 0.9rem; color: #aaa; cursor: pointer; align-self: flex-start;
+  &:hover { color: #111; }
+}
+
+.bp-empty { margin: 0; color: #aaa; font-size: 0.9rem; text-align: center; padding: 1rem 0; }
+
+.bp-reviews { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.bp-review-item {
+  padding: 0.75rem; background: #f9fafb; border-radius: 8px;
+  display: flex; flex-direction: column; gap: 0.3rem;
+}
+
+.bp-review-top { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.bp-review-stars { display: flex; gap: 1px; }
+.bp-review-buyer { font-size: 0.82rem; font-weight: 600; color: #333; }
+.bp-review-dish  { font-size: 0.78rem; color: #aaa; }
+.bp-review-comment { margin: 0; font-size: 0.85rem; color: #555; line-height: 1.4; }

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-seller-type-picker',
@@ -18,7 +19,7 @@ export class SellerTypePickerComponent {
   loading = signal(false);
   error = signal('');
 
-  constructor(private fb: FormBuilder, private userService: UserService) {
+  constructor(private fb: FormBuilder, private userService: UserService, private auth: AuthService) {
     this.form = this.fb.group({
       seller_type:   ['', Validators.required],
       business_name: ['', Validators.required],
@@ -44,7 +45,13 @@ export class SellerTypePickerComponent {
     const { seller_type, business_name, address } = this.form.value;
 
     this.userService.becomeSeller(seller_type, business_name, address).subscribe({
-      next: () => { this.loading.set(false); this.registered.emit(); },
+      next: () => {
+        // Refresh profile from API to get latest state
+        this.auth.refreshProfile().subscribe({
+          next: () => { this.loading.set(false); this.registered.emit(); },
+          error: () => { this.loading.set(false); this.registered.emit(); }
+        });
+      },
       error: err => {
         this.loading.set(false);
         this.error.set(err.error?.message || 'Failed to register as seller');

@@ -1,0 +1,37 @@
+<div class="review-form">
+  <div class="review-header">
+    <div>
+      <div class="review-dish">{{ item.dish_name }}</div>
+      @if (item.business_name) {
+        <div class="review-business">{{ item.business_name }}</div>
+      }
+    </div>
+    <button class="btn-close" (click)="cancelled.emit()">✕</button>
+  </div>
+
+  <div class="stars-row">
+    @for (s of stars; track s) {
+      <span class="star"
+        [class.filled]="s <= (hovered() || rating())"
+        (mouseenter)="hovered.set(s)"
+        (mouseleave)="hovered.set(0)"
+        (click)="rating.set(s)">★</span>
+    }
+    @if (rating() > 0) {
+      <span class="rating-label">{{ rating() }}/5</span>
+    }
+  </div>
+
+  <textarea [(ngModel)]="comment" placeholder="Write a comment (optional)" rows="3" class="comment-input"></textarea>
+
+  @if (error()) {
+    <div class="alert-error">{{ error() }}</div>
+  }
+
+  <div class="review-actions">
+    <button class="btn-outline" type="button" (click)="cancelled.emit()">Cancel</button>
+    <button class="btn-submit" type="button" [disabled]="loading()" (click)="submit()">
+      {{ loading() ? 'Submitting...' : 'Submit Review' }}
+    </button>
+  </div>
+</div>

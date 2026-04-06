@@ -5,7 +5,9 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { DishService } from '../../services/dish.service';
 import { CartService } from '../../services/cart.service';
+import { ReviewService } from '../../services/review.service';
 import { Dish } from '../../models/dish.model';
+import { Review } from '../../models/review.model';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -20,9 +22,13 @@ export class UserDashboardComponent implements OnInit {
   expandedId: string | null = null;
   viewMode: 'grid' | 'list' = 'grid';
   quantities: Record<string, number> = {};
+  dishReviews: Record<string, Review[]> = {};
+  businessPopup: { dish: Dish; reviews: Review[] } | null = null;
+  loadingBusinessReviews = signal(false);
 
   constructor(public auth: AuthService, private dishService: DishService,
-              public cart: CartService, private router: Router) {}
+              public cart: CartService, private router: Router,
+              private reviewService: ReviewService) {}
 
   ngOnInit() {
     this.dishService.getAvailableDishes().subscribe({
@@ -37,6 +43,11 @@ export class UserDashboardComponent implements OnInit {
 
   toggle(id: string) {
     this.expandedId = this.expandedId === id ? null : id;
+    if (this.expandedId && !this.dishReviews[id]) {
+      this.reviewService.getDishReviews(id).subscribe({
+        next: reviews => this.dishReviews[id] = reviews
+      });
+    }
   }
 
   addToCart(dish: Dish) {
@@ -52,4 +63,24 @@ export class UserDashboardComponent implements OnInit {
   }
 
   goToCart() { this.router.navigate(['/cart']); }
+
+  openBusinessReviews(dish: Dish, event: Event) {
+    event.stopPropagation();
+    if (!dish.business_profile_id) {
+      // No business profile — show empty popup
+      this.businessPopup = { dish, reviews: [] };
+      return;
+    }
+    this.loadingBusinessReviews.set(true);
+    this.reviewService.getBusinessReviews(dish.business_profile_id).subscribe({
+      next: result => {
+        this.businessPopup = { dish, reviews: result.reviews };
+        this.loadingBusinessReviews.set(false);
+      },
+      error: () => {
+        this.businessPopup = { dish, reviews: [] };
+        this.loadingBusinessReviews.set(false);
+      }
+    });
+  }
 }

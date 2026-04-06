@@ -3,6 +3,9 @@ export interface Dish {
   seller_id: string;
   seller_name?: string;
   seller_type?: 'homemade' | 'restaurant';
+  seller_avg_rating?: number;
+  seller_review_count?: number;
+  business_profile_id?: string;
   name: string;
   quantity: number;
   quantity_size: number;

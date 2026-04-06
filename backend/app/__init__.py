@@ -41,6 +41,7 @@ def create_app():
     from app.views import order
     from app.views import earnings
     from app.views import business_profile
+    from app.views import review
     app.register_blueprint(api.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(user.bp)
@@ -48,6 +49,7 @@ def create_app():
     app.register_blueprint(order.bp)
     app.register_blueprint(earnings.bp)
     app.register_blueprint(business_profile.bp)
+    app.register_blueprint(review.bp)
 
     # Start background scheduler
     _start_scheduler(app)
