@@ -9,5 +9,4 @@ bcrypt==4.1.2
 razorpay==1.4.2
 APScheduler==3.10.4
 SQLAlchemy==2.0.41
-PyMySQL==1.1.1
 cryptography==45.0.3
