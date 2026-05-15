@@ -1,0 +1,56 @@
+<div class="picker-wrap">
+  <h2>Set up your seller profile</h2>
+  <p class="picker-sub">Tell us about your business to get started</p>
+
+  <form [formGroup]="form">
+    <!-- Seller type -->
+    <div class="seller-type-group">
+      <label class="seller-type-option" [class.selected]="form.get('seller_type')?.value === 'homemade'">
+        <input type="radio" formControlName="seller_type" value="homemade" />
+        <span class="type-icon">🏠</span>
+        <span class="type-label">Homemade</span>
+        <span class="type-desc">Cook from home</span>
+      </label>
+      <label class="seller-type-option" [class.selected]="form.get('seller_type')?.value === 'restaurant'">
+        <input type="radio" formControlName="seller_type" value="restaurant" />
+        <span class="type-icon">🍽️</span>
+        <span class="type-label">Restaurant</span>
+        <span class="type-desc">Professional kitchen</span>
+      </label>
+    </div>
+    @if (form.get('seller_type')?.invalid && form.get('seller_type')?.touched) {
+      <span class="field-error">Please select a seller type</span>
+    }
+
+    <!-- Business name -->
+    <div class="field">
+      <label>{{ businessNameLabel }}</label>
+      <input type="text" formControlName="business_name" [placeholder]="businessNamePlaceholder"
+        [class.invalid]="form.get('business_name')?.invalid && form.get('business_name')?.touched" />
+      @if (form.get('business_name')?.invalid && form.get('business_name')?.touched) {
+        <span class="field-error">Business name is required</span>
+      }
+    </div>
+
+    <!-- Address -->
+    <div class="field">
+      <label>Address</label>
+      <textarea formControlName="address" placeholder="e.g. 12 Main Street, Chennai" rows="2"
+        [class.invalid]="form.get('address')?.invalid && form.get('address')?.touched"></textarea>
+      @if (form.get('address')?.invalid && form.get('address')?.touched) {
+        <span class="field-error">Address is required</span>
+      }
+    </div>
+  </form>
+
+  @if (error()) {
+    <div class="alert-error">{{ error() }}</div>
+  }
+
+  <div class="picker-actions">
+    <button class="btn-outline" type="button" (click)="cancelled.emit()">Cancel</button>
+    <button class="btn-seller" type="button" [disabled]="loading()" (click)="submit()">
+      {{ loading() ? 'Setting up...' : 'Start Selling' }}
+    </button>
+  </div>
+</div>

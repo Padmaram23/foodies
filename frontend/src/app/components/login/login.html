@@ -1,0 +1,60 @@
+<div class="login-wrapper">
+  <div class="app-title">{{ appName }}</div>
+
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Welcome back</h1>
+      <p>Sign in to your account</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      @if (sessionExpired()) {
+        <div class="alert-warning" role="alert">Your session has expired. Please sign in again.</div>
+      }
+      @if (error()) {
+        <div class="alert-error" role="alert">{{ error() }}</div>
+      }
+
+      <div class="field">
+        <label for="identifier">Email or Phone</label>
+        <input
+          id="identifier"
+          type="text"
+          formControlName="identifier"
+          placeholder="Email or Phone"
+          autocomplete="username"
+          [class.invalid]="form.get('identifier')?.invalid && form.get('identifier')?.touched"
+        />
+        @if (form.get('identifier')?.invalid && form.get('identifier')?.touched) {
+          <span class="field-error">Email or phone is required</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="password-wrap">
+          <input
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Password"
+            autocomplete="current-password"
+            [class.invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+          />
+          <button type="button" class="toggle-pw" (click)="showPassword.set(!showPassword())" aria-label="Toggle password visibility">
+            {{ showPassword() ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+          <span class="field-error">Password is required</span>
+        }
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="loading()">
+        {{ loading() ? 'Signing in...' : 'Sign in' }}
+      </button>
+    </form>
+
+    <p class="switch-link">Don't have an account? <a routerLink="/signup">Sign up</a></p>
+  </div>
+</div>

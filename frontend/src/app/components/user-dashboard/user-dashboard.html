@@ -1,0 +1,115 @@
+<div class="home">
+  <div class="welcome-card">
+    <h1>Welcome, {{ auth.currentUser()?.name }} 👋</h1>
+    @if (cart.count() > 0) {
+      <button class="cart-fab" (click)="goToCart()">
+        🛒 Cart · {{ cart.count() }} · ₹{{ cart.total() | number:'1.2-2' }}
+      </button>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">Loading dishes...</div>
+  } @else if (dishes().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">🍱</div>
+      <h2>Nothing to eat here... yet</h2>
+      <p>We couldn't find anything decent for you to eat. Check in after sometime!</p>
+    </div>
+  } @else {
+    <div class="list-toolbar">
+      <span class="dish-count">{{ dishes().length }} dish{{ dishes().length !== 1 ? 'es' : '' }} available</span>
+      <div class="view-toggle">
+        <button class="view-btn" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'" title="Grid view" aria-label="Grid view">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+          </svg>
+        </button>
+        <button class="view-btn" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'" title="List view" aria-label="List view">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/>
+            <line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div [class]="viewMode === 'grid' ? 'dish-grid' : 'dish-list'">
+      @for (dish of dishes(); track dish.id) {
+        <div class="dish-card" [class.expanded]="expandedId === dish.id">
+
+          <!-- Clickable summary row -->
+          <div class="dish-summary" (click)="toggle(dish.id)" role="button" tabindex="0"
+            (keydown.enter)="toggle(dish.id)" (keydown.space)="toggle(dish.id)">
+            <div class="dish-main">
+              <span class="dish-name">{{ dish.name }}</span>
+              <div class="dish-price-row">
+                @if (dish.discount_percent) {
+                  <span class="discount-badge">{{ dish.discount_percent }}% OFF</span>
+                  <span class="price-final">₹{{ dish.discounted_price }}</span>
+                  <span class="price-original">₹{{ dish.price }}</span>
+                } @else {
+                  <span class="price-final">₹{{ dish.price }}</span>
+                }
+              </div>
+              <div class="seller-info">
+                <div class="seller-avatar">{{ dish.seller_name?.charAt(0)?.toUpperCase() }}</div>
+                <span class="seller-name">{{ dish.seller_name }}</span>
+                @if (dish.seller_type) {
+                  <span class="seller-type-badge" [class]="dish.seller_type">
+                    {{ dish.seller_type === 'homemade' ? '🏠 Homemade' : '🍽️ Restaurant' }}
+                  </span>
+                }
+              </div>
+            </div>
+            <span class="expand-icon">{{ expandedId === dish.id ? '▲' : '▼' }}</span>
+          </div>
+
+          <!-- Expanded detail — outside the toggle click zone -->
+          @if (expandedId === dish.id) {
+            <div class="dish-detail">
+              <div class="detail-row">
+                <span class="detail-label">Available</span>
+                <span class="detail-value" [class.low-stock]="dish.available_quantity <= 1">
+                  {{ dish.available_quantity }} serving{{ dish.available_quantity !== 1 ? 's' : '' }} left
+                </span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Size</span>
+                <span class="detail-value">{{ dish.quantity_size }} {{ dish.quantity_unit }}</span>
+              </div>
+              @if (dish.whats_special) {
+                <div class="detail-special">
+                  <span class="detail-label">What's special</span>
+                  <p>✨ {{ dish.whats_special }}</p>
+                </div>
+              }
+
+              <div class="add-to-cart-row">
+                <div class="qty-control">
+                  <button type="button" (click)="quantities[dish.id] = (quantities[dish.id] || 1) - 1"
+                    [disabled]="(quantities[dish.id] || 1) <= 1">−</button>
+                  <span>{{ quantities[dish.id] || 1 }}</span>
+                  <button type="button" (click)="quantities[dish.id] = (quantities[dish.id] || 1) + 1"
+                    [disabled]="(quantities[dish.id] || 1) >= dish.available_quantity">+</button>
+                </div>
+                <button type="button" class="btn-add-cart"
+                  [disabled]="isMaxed(dish)"
+                  [title]="isMaxed(dish) ? 'Maximum quantity added to the cart' : 'Add to cart'"
+                  (click)="addToCart(dish)">
+                  {{ isMaxed(dish) ? 'Max Added' : 'Add to Cart' }}
+                </button>
+              </div>
+            </div>
+          }
+
+        </div>
+      }
+    </div>
+  }
+</div>

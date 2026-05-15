@@ -1,0 +1,13 @@
+<div class="dialog-backdrop" (click)="cancelled.emit()">
+  <div class="dialog-box" (click)="$event.stopPropagation()">
+    <div class="dialog-icon">🗑️</div>
+    <h3>{{ title }}</h3>
+    <p>{{ message }}</p>
+    <div class="dialog-actions">
+      <button class="btn-cancel" type="button" (click)="cancelled.emit()">Cancel</button>
+      <button class="btn-confirm" type="button" [disabled]="loading" (click)="confirmed.emit()">
+        {{ loading ? 'Deleting...' : confirmLabel }}
+      </button>
+    </div>
+  </div>
+</div>

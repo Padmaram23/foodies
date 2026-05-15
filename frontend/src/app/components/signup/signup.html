@@ -1,0 +1,87 @@
+<div class="login-wrapper">
+  <div class="app-title">{{ appName }}</div>
+
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Create account</h1>
+      <p>Sign up to get started</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      @if (error()) {
+        <div class="alert-error" role="alert">{{ error() }}</div>
+      }
+
+      <div class="field">
+        <label for="name">Full Name</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="Full Name"
+          autocomplete="name"
+          [class.invalid]="form.get('name')?.invalid && form.get('name')?.touched"
+        />
+        @if (form.get('name')?.invalid && form.get('name')?.touched) {
+          <span class="field-error">Name is required</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="email">Email address</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Email"
+          autocomplete="email"
+          [class.invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+        />
+        @if (form.get('email')?.invalid && form.get('email')?.touched) {
+          <span class="field-error">Enter a valid email</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone Number <span class="optional">(optional)</span></label>
+        <input
+          id="phone"
+          type="tel"
+          formControlName="phone"
+          placeholder="Phone Number"
+          autocomplete="tel"
+          [class.invalid]="form.get('phone')?.invalid && form.get('phone')?.touched"
+        />
+        @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
+          <span class="field-error">Enter a valid phone number</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="password-wrap">
+          <input
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Password"
+            autocomplete="new-password"
+            [class.invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+          />
+          <button type="button" class="toggle-pw" (click)="showPassword.set(!showPassword())" aria-label="Toggle password visibility">
+            {{ showPassword() ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+          <span class="field-error">Password must be at least 6 characters</span>
+        }
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="loading()">
+        {{ loading() ? 'Creating account...' : 'Sign up' }}
+      </button>
+    </form>
+
+    <p class="switch-link">Already have an account? <a routerLink="/login">Sign in</a></p>
+  </div>
+</div>

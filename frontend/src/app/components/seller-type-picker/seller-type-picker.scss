@@ -1,0 +1,74 @@
+.picker-wrap {
+  h2 { margin: 0 0 0.25rem; font-size: 1.2rem; font-weight: 700; color: #111; }
+}
+
+.picker-sub { margin: 0 0 1.25rem; font-size: 0.9rem; color: #666; }
+
+.seller-type-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.seller-type-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1.25rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+
+  input[type="radio"] { display: none; }
+  .type-icon  { font-size: 2rem; }
+  .type-label { font-weight: 700; font-size: 0.95rem; color: #111; }
+  .type-desc  { font-size: 0.78rem; color: #888; }
+
+  &:hover   { border-color: #a5b4fc; background: #f5f3ff; }
+  &.selected { border-color: #6366f1; background: #ede9fe; }
+}
+
+.field-error { font-size: 0.8rem; color: #ef4444; display: block; margin-bottom: 0.75rem; }
+
+.alert-error {
+  background: #fef2f2; color: #b91c1c;
+  border: 1px solid #fecaca; border-radius: 8px;
+  padding: 0.65rem 1rem; font-size: 0.9rem; margin-bottom: 1rem;
+}
+
+.picker-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.btn-outline {
+  padding: 0.65rem 1.25rem; background: none;
+  border: 1px solid #d1d5db; border-radius: 8px;
+  font-size: 0.95rem; font-weight: 500; cursor: pointer; color: #555;
+  transition: background 0.2s;
+  &:hover { background: #f3f4f6; }
+}
+
+.btn-seller {
+  padding: 0.65rem 1.5rem; background: #f59e0b; color: #fff;
+  border: none; border-radius: 8px; font-size: 0.95rem;
+  font-weight: 600; cursor: pointer; transition: background 0.2s;
+  &:hover:not(:disabled) { background: #d97706; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.field {
+  display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem;
+  label { font-size: 0.875rem; font-weight: 500; color: #333; }
+  input, textarea {
+    padding: 0.65rem 0.875rem; border: 1px solid #d1d5db;
+    border-radius: 8px; font-size: 0.95rem; outline: none; font-family: inherit;
+    transition: border-color 0.2s; resize: vertical;
+    &:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+    &.invalid { border-color: #ef4444; }
+  }
+}
